@@ -8,9 +8,6 @@ export class CreateMovieInput {
   @Field()
   year: string;
 
-  @Field()
-  country: string;
-
   @Field(() => Int)
   runtime: number;
 }

@@ -4,7 +4,4 @@ import { Field, InputType } from '@nestjs/graphql';
 export class UpdateCrewInput {
   @Field({ nullable: true })
   name?: string;
-
-  @Field({ nullable: true })
-  job?: string;
 }

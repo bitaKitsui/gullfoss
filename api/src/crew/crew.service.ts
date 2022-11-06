@@ -1,51 +1,38 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateCrewInput } from './models/create-crew-input';
 import { UpdateCrewInput } from './models/update-crew-input';
-
-const mappedJob = {
-  DIRECTOR: '監督',
-  WRITER: '脚本',
-  PHOTOGRAPHER: '撮影',
-  PRODUCER: '製作',
-} as const;
 
 @Injectable()
 export class CrewService {
   constructor(private prisma: PrismaService) {}
 
   async findAllCrew() {
-    return await this.prisma.crew.findMany();
+    return await this.prisma.crew.findMany({
+      include: {
+        movies: { include: { movie: true } },
+        jobs: { include: { job: true } },
+      },
+    });
   }
 
   async createCrew(createCrewInput: CreateCrewInput) {
-    const { name, job } = createCrewInput;
+    const { name } = createCrewInput;
 
-    const valid = this.isJob(job);
-
-    if (valid) {
-      return await this.prisma.crew.create({
-        data: {
-          id: uuidV4(),
-          name,
-          job,
-        },
-      });
-    } else {
-      throw new BadRequestException();
-    }
+    return await this.prisma.crew.create({
+      data: {
+        id: uuidV4(),
+        name,
+      },
+    });
   }
 
   async createCrewSeeds() {
     const seedsData = [
-      { name: '小津安二郎', job: mappedJob.DIRECTOR },
-      { name: 'ジョン・フォード', job: mappedJob.DIRECTOR },
-      { name: 'ジャン・ルノワール', job: mappedJob.DIRECTOR },
+      { name: '小津安二郎' },
+      { name: 'ジョン・フォード' },
+      { name: 'ジャン・ルノワール' },
     ];
 
     const crews = [];
@@ -54,7 +41,6 @@ export class CrewService {
         data: {
           id: uuidV4(),
           name: seed.name,
-          job: seed.job,
         },
       });
       crews.push(newCrews);
@@ -63,31 +49,25 @@ export class CrewService {
   }
 
   async updateCrewById(id: string, updateCrewInput: UpdateCrewInput) {
-    const { name, job } = updateCrewInput;
-
-    const valid = this.isJob(job);
-
-    if (valid) {
-      return await this.prisma.crew.update({
-        where: { id },
-        data: { name: name ? name : undefined, job: job ? job : undefined },
-      });
-    } else {
-      throw new BadRequestException();
-    }
+    const { name } = updateCrewInput;
+    return await this.prisma.crew.update({
+      where: { id },
+      data: { name: name ? name : undefined },
+    });
   }
 
-  async likeCrew(crewId: string, likeId: string) {
+  async setJob(crewId: string, jobId: string) {
     const crew = await this.prisma.crew.findUnique({ where: { id: crewId } });
-    const like = await this.prisma.like.findUnique({ where: { id: likeId } });
+    const job = await this.prisma.job.findUnique({ where: { id: jobId } });
 
-    if (!crew || !like) throw new NotFoundException();
+    if (!crew || !job) throw new NotFoundException();
 
-    return await this.prisma.crew.update({
-      where: { id: crewId },
+    return await this.prisma.jobsOnCrews.create({
       data: {
-        likes: { set: [{ id: likeId }] },
+        crewId: crew.id,
+        jobId: job.id,
       },
+      include: { crew: true, job: true },
     });
   }
 
@@ -99,15 +79,5 @@ export class CrewService {
   async deleteAllCrews() {
     await this.prisma.crew.deleteMany();
     return true;
-  }
-
-  isJob(job: string | undefined): boolean {
-    if (!job) return true;
-    return (
-      job === mappedJob.DIRECTOR ||
-      job === mappedJob.WRITER ||
-      job === mappedJob.PHOTOGRAPHER ||
-      job === mappedJob.PRODUCER
-    );
   }
 }

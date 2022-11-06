@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 
@@ -7,7 +7,9 @@ export class CastService {
   constructor(private prisma: PrismaService) {}
 
   async findAllCasts() {
-    return await this.prisma.cast.findMany();
+    return await this.prisma.castsOnMovies.findMany({
+      include: { movie: true, cast: true },
+    });
   }
 
   async createCastSeeds() {
@@ -24,21 +26,5 @@ export class CastService {
       casts.push(newCasts);
     }
     return await this.prisma.$transaction(casts);
-  }
-
-  async likeCast(castId: string, likeId: string) {
-    const cast = await this.prisma.cast.findUnique({ where: { id: castId } });
-    const like = await this.prisma.like.findUnique({
-      where: { id: likeId },
-    });
-
-    if (!cast || !like) throw new NotFoundException();
-
-    return await this.prisma.cast.update({
-      where: { id: castId },
-      data: {
-        likes: { set: [{ id: likeId }] },
-      },
-    });
   }
 }

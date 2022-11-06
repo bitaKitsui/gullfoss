@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Movie } from '../../movie/models/movie.model';
+import { CrewsOnMovies } from './crewsOnMovies.models';
+import { JobsOnCrews } from '../../job/models/jobsOnCrews.models';
 
 @ObjectType()
 export class Crew {
@@ -10,14 +11,14 @@ export class Crew {
   name: string;
 
   @Field()
-  job: string;
-
-  @Field()
   createdAt: string;
 
   @Field()
   updatedAt: string;
 
-  @Field(() => [Movie], { nullable: true })
-  movies: Movie[] | null;
+  @Field(() => [CrewsOnMovies], { nullable: true })
+  movies: CrewsOnMovies[] | null;
+
+  @Field(() => [JobsOnCrews], { nullable: true })
+  jobs: JobsOnCrews[] | null;
 }

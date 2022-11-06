@@ -1,12 +1,13 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CastService } from './cast.service';
 import { Cast } from './models/cast.models';
+import { CastsOnMovies } from './models/castsOnMovies.models';
 
 @Resolver()
 export class CastResolver {
   constructor(private castService: CastService) {}
 
-  @Query(() => [Cast])
+  @Query(() => [CastsOnMovies])
   async findAllCasts() {
     return await this.castService.findAllCasts();
   }
@@ -14,13 +15,5 @@ export class CastResolver {
   @Mutation(() => [Cast])
   async createCastSeeds() {
     return await this.castService.createCastSeeds();
-  }
-
-  @Mutation(() => Cast)
-  async likeCast(
-    @Args('castId') castId: string,
-    @Args('likeId') likeId: string,
-  ) {
-    return await this.castService.likeCast(castId, likeId);
   }
 }

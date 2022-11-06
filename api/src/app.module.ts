@@ -5,7 +5,10 @@ import { join } from 'path';
 import { MovieModule } from './movie/movie.module';
 import { CrewModule } from './crew/crew.module';
 import { CastModule } from './cast/cast.module';
-import { LikeModule } from './like/like.module';
+import { ListModule } from './list/list.module';
+import { JobModule } from './job/job.module';
+import { CompanyModule } from './company/company.module';
+import { CountryModule } from './country/country.module';
 
 @Module({
   imports: [
@@ -17,7 +20,10 @@ import { LikeModule } from './like/like.module';
     MovieModule,
     CrewModule,
     CastModule,
-    LikeModule,
+    ListModule,
+    JobModule,
+    CompanyModule,
+    CountryModule,
   ],
   controllers: [],
   providers: [],

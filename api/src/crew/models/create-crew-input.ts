@@ -4,7 +4,4 @@ import { Field, InputType } from '@nestjs/graphql';
 export class CreateCrewInput {
   @Field()
   name: string;
-
-  @Field()
-  job: string;
 }

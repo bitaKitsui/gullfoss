@@ -14,35 +14,118 @@ model Movie {
   id         String    @id
   title      String
   year       String
-  country    String
   runtime    Int
+  isWatched  Boolean
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  crews      Crew[]
-  casts      Cast[]
-  likes      Like[]
+  crews      CrewsOnMovies[]
+  casts      CastsOnMovies[]
+  lists      ListsOnMovies[]
+  companies  CompaniesOnMovies[]
+  countries  CountriesOnMovies[]
 }
 
 model Crew {
   id         String    @id
   name       String
-  job        String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  movies     Movie[]
-  likes      Like[]
+  movies     CrewsOnMovies[]
+  jobs       JobsOnCrews[]
+}
+
+model Job {
+  id       String  @id
+  name     String
+  crews    JobsOnCrews[]
 }
 
 model Cast {
   id      String  @id
   name    String
-  movies  Movie[]
-  likes   Like[]
+  movies  CastsOnMovies[]
 }
 
-model Like {
+model Company {
   id      String  @id
-  movies  Movie[]
-  crews   Crew[]
-  casts   Cast[]
+  name    String
+  movies  CompaniesOnMovies[]
+}
+
+model List {
+  id      String  @id
+  title   String
+  movies  ListsOnMovies[]
+}
+
+model Country {
+  id      String  @id
+  name    String
+  movies  CountriesOnMovies[]
+}
+
+model JobsOnCrews {
+  crew  Crew  @relation(fields: [crewId], references: [id])
+  crewId  String
+  job  Job  @relation(fields: [jobId], references: [id])
+  jobId  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@id([crewId, jobId])
+}
+
+model CrewsOnMovies {
+  movie      Movie     @relation(fields: [movieId], references: [id])
+  movieId    String
+  crew       Crew      @relation(fields: [crewId], references: [id])
+  crewId     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@id([movieId, crewId])
+}
+
+model CastsOnMovies {
+  movie      Movie     @relation(fields: [movieId], references: [id])
+  movieId    String
+  cast       Cast      @relation(fields: [castId], references: [id])
+  castId     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@id([movieId, castId])
+}
+
+model ListsOnMovies {
+  movie      Movie     @relation(fields: [movieId], references: [id])
+  movieId    String
+  list       List      @relation(fields: [listId], references: [id])
+  listId     String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@id([movieId, listId])
+}
+
+model CompaniesOnMovies {
+  movie      Movie    @relation(fields: [movieId], references: [id])
+  movieId    String
+  company    Company  @relation(fields: [companyId], references: [id])
+  companyId  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@id([movieId, companyId])
+}
+
+model CountriesOnMovies {
+  movie      Movie    @relation(fields: [movieId], references: [id])
+  movieId    String
+  country    Country  @relation(fields: [countryId], references: [id])
+  countryId  String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@id([movieId, countryId])
 }

@@ -8,13 +8,43 @@ type Cast {
   name: String!
 }
 
+type CastsOnMovies {
+  cast: Cast!
+  castId: String!
+  movie: Movie!
+  movieId: String!
+}
+
+type CompaniesOnMovies {
+  company: Company!
+  companyId: String!
+  movie: Movie!
+  movieId: String!
+}
+
+type Company {
+  id: String!
+  movies: [CompaniesOnMovies!]
+  name: String!
+}
+
+type CountriesOnMovies {
+  country: Country!
+  countryId: String!
+  movie: Movie!
+  moviesId: String!
+}
+
+type Country {
+  id: String!
+  name: String!
+}
+
 input CreateCrewInput {
-  job: String!
   name: String!
 }
 
 input CreateMovieInput {
-  country: String!
   runtime: Int!
   title: String!
   year: String!
@@ -23,25 +53,53 @@ input CreateMovieInput {
 type Crew {
   createdAt: String!
   id: String!
-  job: String!
-  movies: [Movie!]
+  jobs: [JobsOnCrews!]
+  movies: [CrewsOnMovies!]
   name: String!
   updatedAt: String!
 }
 
-type Like {
-  casts: [Cast!]
-  crews: [Crew!]
+type CrewsOnMovies {
+  crew: Crew!
+  crewId: String!
+  movie: Movie!
+  movieId: String!
+}
+
+type Job {
+  id: String!
+  name: String!
+}
+
+type JobsOnCrews {
+  crew: Crew!
+  crewId: String!
+  job: Job!
+  jobId: String!
+}
+
+type List {
   id: String!
   movies: [Movie!]
+  title: String!
+}
+
+type ListsOnMovies {
+  list: List!
+  listId: String!
+  movie: Movie!
+  movieId: String!
 }
 
 type Movie {
-  casts: [Cast!]
-  country: String!
+  casts: [CastsOnMovies!]
+  companies: [CompaniesOnMovies!]
+  countries: [CountriesOnMovies!]
   createdAt: String!
-  crews: [Crew!]
+  crews: [CrewsOnMovies!]
   id: String!
+  isWatched: Boolean!
+  lists: [List!]
   runtime: Int!
   title: String!
   updatedAt: String!
@@ -49,41 +107,48 @@ type Movie {
 }
 
 type Mutation {
-  create(createMovieInput: CreateMovieInput!, crews: [CreateCrewInput!]!): Movie!
+  addList(listId: String!, movieId: String!): ListsOnMovies!
+  create(createMovieInput: CreateMovieInput!): Movie!
   createCastSeeds: [Cast!]!
+  createCompanySeeds: [Company!]!
+  createCountrySeeds: [Country!]!
   createCrew(createCrewInput: CreateCrewInput!): Crew!
   createCrewSeeds: [Crew!]!
-  createLike: Like!
+  createJobs: [Job!]!
+  createList(title: String!): List!
   createSeeds: [Movie!]!
   deleteAll: Boolean!
   deleteAllCrews: Boolean!
   deleteCrewById(id: String!): Boolean!
   deleteOneById(id: String!): Boolean!
-  likeCast(castId: String!, likeId: String!): Cast!
-  likeCrew(crewId: String!, likeId: String!): Crew!
-  likeMovie(likeId: String!, movieId: String!): Movie!
-  setCast(castId: String!, movieId: String!): Movie!
-  setCrew(crewId: String!, movieId: String!): Movie!
+  setCast(castId: String!, movieId: String!): CastsOnMovies!
+  setCompany(companyId: String!, movieId: String!): CompaniesOnMovies!
+  setCountry(countryId: String!, movieId: String!): CountriesOnMovies!
+  setCrew(crewId: String!, movieId: String!): CrewsOnMovies!
+  setJob(crewId: String!, jobId: String!): JobsOnCrews!
   updateCrewById(id: String!, updateCrewInput: UpdateCrewInput!): Crew!
   updateMovie(id: String!, updateMovieInput: UpdateMovieInput!): Movie!
 }
 
 type Query {
   findAll: [Movie!]!
-  findAllCasts: [Cast!]!
+  findAllCasts: [CastsOnMovies!]!
+  findAllCompanies: [Company!]!
+  findAllCountries: [Country!]!
   findAllCrew: [Crew!]!
-  findAllLikes: [Like!]!
-  findLikeById(id: String!): Like!
+  findAllJobs: [Job!]!
+  findAllLists: [ListsOnMovies!]!
+  findListById(id: String!): List!
   findOneById(id: String!): Movie!
+  findUnWatchedMovies: [Movie!]!
+  findWatchedMovies: [Movie!]!
 }
 
 input UpdateCrewInput {
-  job: String
   name: String
 }
 
 input UpdateMovieInput {
-  country: String
   runtime: Int
   title: String
   year: String

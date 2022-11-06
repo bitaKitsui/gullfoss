@@ -1,6 +1,9 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Crew } from '../../crew/models/crew.models';
-import { Cast } from '../../cast/models/cast.models';
+import { List } from '../../list/models/list.models';
+import { CrewsOnMovies } from '../../crew/models/crewsOnMovies.models';
+import { CastsOnMovies } from '../../cast/models/castsOnMovies.models';
+import { CompaniesOnMovies } from '../../company/models/companiesOnMovies.models';
+import { CountriesOnMovies } from '../../country/models/countriesOnMovies.models';
 
 @ObjectType()
 export class Movie {
@@ -13,11 +16,11 @@ export class Movie {
   @Field()
   year: string;
 
-  @Field()
-  country: string;
-
   @Field(() => Int)
   runtime: number;
+
+  @Field(() => Boolean)
+  isWatched: boolean;
 
   @Field()
   createdAt: string;
@@ -25,9 +28,18 @@ export class Movie {
   @Field()
   updatedAt: string;
 
-  @Field(() => [Crew], { nullable: true })
-  crews: [Crew] | null;
+  @Field(() => [CrewsOnMovies], { nullable: true })
+  crews: [CrewsOnMovies] | null;
 
-  @Field(() => [Cast], { nullable: true })
-  casts: Cast[] | null;
+  @Field(() => [CastsOnMovies], { nullable: true })
+  casts: [CastsOnMovies] | null;
+
+  @Field(() => [List], { nullable: true })
+  lists: [List] | null;
+
+  @Field(() => [CompaniesOnMovies], { nullable: true })
+  companies: [CompaniesOnMovies] | null;
+
+  @Field(() => [CountriesOnMovies], { nullable: true })
+  countries: [CountriesOnMovies] | null;
 }

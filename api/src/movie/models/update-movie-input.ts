@@ -8,9 +8,6 @@ export class UpdateMovieInput {
   @Field({ nullable: true })
   year: string;
 
-  @Field({ nullable: true })
-  country: string;
-
   @Field(() => Int, { nullable: true })
   runtime: number;
 }

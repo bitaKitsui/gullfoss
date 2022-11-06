@@ -3,6 +3,7 @@ import { CrewService } from './crew.service';
 import { Crew } from './models/crew.models';
 import { CreateCrewInput } from './models/create-crew-input';
 import { UpdateCrewInput } from './models/update-crew-input';
+import { JobsOnCrews } from '../job/models/jobsOnCrews.models';
 
 @Resolver()
 export class CrewResolver {
@@ -34,12 +35,9 @@ export class CrewResolver {
     return this.crewService.updateCrewById(id, updateCrewInput);
   }
 
-  @Mutation(() => Crew)
-  async likeCrew(
-    @Args('crewId') crewId: string,
-    @Args('likeId') likeId: string,
-  ) {
-    return this.crewService.likeCrew(crewId, likeId);
+  @Mutation(() => JobsOnCrews)
+  async setJob(@Args('crewId') crewId: string, @Args('jobId') jobId: string) {
+    return await this.crewService.setJob(crewId, jobId);
   }
 
   @Mutation(() => Boolean)

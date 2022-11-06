@@ -2,15 +2,40 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateMovieInput } from './models/create-movie-input';
-import { CreateCrewInput } from '../crew/models/create-crew-input';
 import { UpdateMovieInput } from './models/update-movie-input';
+import { count } from 'rxjs';
+
+const INCLUDE = {
+  crews: {
+    include: { crew: { include: { jobs: { include: { job: true } } } } },
+  },
+  casts: { include: { cast: true } },
+  companies: { include: { company: true } },
+  countries: { include: { country: true } },
+};
 
 @Injectable()
 export class MovieService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.movie.findMany();
+    return await this.prisma.movie.findMany({
+      include: INCLUDE,
+    });
+  }
+
+  async findWatchedMovies() {
+    return await this.prisma.movie.findMany({
+      where: { isWatched: true },
+      include: INCLUDE,
+    });
+  }
+
+  async findUnWatchedMovies() {
+    return await this.prisma.movie.findMany({
+      where: { isWatched: false },
+      include: INCLUDE,
+    });
   }
 
   async findOneById(id: string) {
@@ -22,37 +47,36 @@ export class MovieService {
     return result;
   }
 
-  async create(createMovieInput: CreateMovieInput, crews: CreateCrewInput[]) {
-    const { title, year, country, runtime } = createMovieInput;
+  async create(createMovieInput: CreateMovieInput) {
+    const { title, year, runtime } = createMovieInput;
     return this.prisma.movie.create({
       data: {
         id: uuidV4(),
         title,
         year,
-        country,
         runtime,
-        crews: {
-          create: crews.map(({ name, job }) => ({
-            id: uuidV4(),
-            name,
-            job,
-          })),
-        },
+        isWatched: true,
       },
-      include: { crews: true },
     });
   }
 
   async createSeeds() {
     const seedsData = [
-      { title: '東京物語', year: '1956', country: '日本', runtime: 98 },
-      { title: '駅馬車', year: '1939', country: 'アメリカ', runtime: 100 },
+      { title: '東京物語', year: '1956', runtime: 98, isWatched: true },
+      { title: '駅馬車', year: '1939', runtime: 100, isWatched: false },
       {
         title: 'ゲームの規則',
         year: '1939',
-        country: 'フランス',
         runtime: 120,
+        isWatched: true,
       },
+      {
+        title: 'ドライブマイカー',
+        year: '2022',
+        runtime: 180,
+        isWatched: true,
+      },
+      { title: 'スリ', year: '1965', runtime: 90, isWatched: false },
     ];
 
     const movies = [];
@@ -62,8 +86,8 @@ export class MovieService {
           id: uuidV4(),
           title: seed.title,
           year: seed.year,
-          country: seed.country,
           runtime: seed.runtime,
+          isWatched: seed.isWatched,
         },
       });
       movies.push(newMovies);
@@ -72,13 +96,12 @@ export class MovieService {
   }
 
   async updateMovie(id: string, updateMovieInput: UpdateMovieInput) {
-    const { title, year, country, runtime } = updateMovieInput;
+    const { title, year, runtime } = updateMovieInput;
     return await this.prisma.movie.update({
       where: { id },
       data: {
         title: title ? title : undefined,
         year: year ? year : undefined,
-        country: country ? country : undefined,
         runtime: runtime ? runtime : undefined,
       },
     });
@@ -95,11 +118,12 @@ export class MovieService {
 
     if (!movie || !crew) throw new NotFoundException();
 
-    return await this.prisma.movie.update({
-      where: { id: movieId },
+    return await this.prisma.crewsOnMovies.create({
       data: {
-        crews: { set: [{ id: crewId }] },
+        crewId: crew.id,
+        movieId: movie.id,
       },
+      include: { movie: true, crew: true },
     });
   }
 
@@ -114,30 +138,70 @@ export class MovieService {
 
     if (!movie || !cast) throw new NotFoundException();
 
-    return await this.prisma.movie.update({
-      where: { id: movieId },
+    return await this.prisma.castsOnMovies.create({
       data: {
-        casts: { set: [{ id: castId }] },
+        castId: cast.id,
+        movieId: movie.id,
       },
+      include: { movie: true, cast: true },
     });
   }
 
-  async likeMovie(movieId: string, likeId: string) {
+  async addList(movieId: string, listId: string) {
     const movie = await this.prisma.movie.findUnique({
       where: { id: movieId },
     });
 
-    const like = await this.prisma.like.findUnique({
-      where: { id: likeId },
+    const list = await this.prisma.list.findUnique({
+      where: { id: listId },
     });
 
-    if (!movie || !like) throw new NotFoundException();
+    if (!movie || !list) throw new NotFoundException();
 
-    return await this.prisma.movie.update({
-      where: { id: movieId },
+    return await this.prisma.listsOnMovies.create({
       data: {
-        likes: { set: [{ id: likeId }] },
+        listId: list.id,
+        movieId: movie.id,
       },
+      include: { movie: true, list: true },
+    });
+  }
+
+  async setCompany(movieId: string, companyId: string) {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id: movieId },
+    });
+    const company = await this.prisma.company.findUnique({
+      where: { id: companyId },
+    });
+
+    if (!movie || !company) throw new NotFoundException();
+
+    return await this.prisma.companiesOnMovies.create({
+      data: {
+        movieId: movie.id,
+        companyId: company.id,
+      },
+      include: { movie: true, company: true },
+    });
+  }
+
+  async setCountry(movieId: string, countryId: string) {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id: movieId },
+    });
+    const country = await this.prisma.country.findUnique({
+      where: { id: countryId },
+    });
+
+    if (!movie || !country) throw new NotFoundException();
+
+    return await this.prisma.countriesOnMovies.create({
+      data: {
+        movieId: movie.id,
+        countryId: country.id,
+      },
+      include: { movie: true, country: true },
     });
   }
 
