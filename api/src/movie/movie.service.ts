@@ -105,6 +105,25 @@ export class MovieService {
     });
   }
 
+  async setCast(movieId: string, castId: string) {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id: movieId },
+    });
+
+    const cast = await this.prisma.cast.findUnique({
+      where: { id: castId },
+    });
+
+    if (!movie || !cast) throw new NotFoundException();
+
+    return await this.prisma.movie.update({
+      where: { id: movieId },
+      data: {
+        casts: { set: [{ id: castId }] },
+      },
+    });
+  }
+
   async deleteOneById(id: string) {
     await this.prisma.movie.delete({ where: { id } });
     return true;

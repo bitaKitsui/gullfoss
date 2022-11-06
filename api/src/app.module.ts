@@ -4,6 +4,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { MovieModule } from './movie/movie.module';
 import { CrewModule } from './crew/crew.module';
+import { CastModule } from './cast/cast.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { CrewModule } from './crew/crew.module';
     }),
     MovieModule,
     CrewModule,
+    CastModule,
   ],
   controllers: [],
   providers: [],

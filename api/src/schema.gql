@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Cast {
+  id: String!
+  movies: [Movie!]
+  name: String!
+}
+
 input CreateCrewInput {
   job: String!
   name: String!
@@ -22,6 +28,7 @@ type Crew {
 }
 
 type Movie {
+  casts: [Cast!]
   country: String!
   createdAt: String!
   crews: [Crew!]
@@ -33,6 +40,7 @@ type Movie {
 
 type Mutation {
   create(createMovieInput: CreateMovieInput!, crews: [CreateCrewInput!]!): Movie!
+  createCastSeeds: [Cast!]!
   createCrew(createCrewInput: CreateCrewInput!): Crew!
   createCrewSeeds: [Crew!]!
   createDummy: Movie!
@@ -41,12 +49,14 @@ type Mutation {
   deleteAllCrews: Boolean!
   deleteCrewById(id: String!): Boolean!
   deleteOneById(id: String!): Boolean!
+  setCast(castId: String!, movieId: String!): Movie!
   updateCrewById(id: String!, updateCrewInput: UpdateCrewInput!): Crew!
   updateMovie(country: String, id: String!, title: String, year: String): Movie!
 }
 
 type Query {
   findAll: [Movie!]!
+  findAllCasts: [Cast!]!
   findAllCrew: [Crew!]!
   findOneById(id: String!): Movie!
 }
