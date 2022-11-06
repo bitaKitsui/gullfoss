@@ -51,6 +51,14 @@ export class MovieResolver {
   }
 
   @Mutation(() => Movie)
+  async setCrew(
+    @Args('movieId') movieId: string,
+    @Args('crewId') crewId: string,
+  ) {
+    return await this.movieService.setCrew(movieId, crewId);
+  }
+
+  @Mutation(() => Movie)
   async setCast(
     @Args('movieId') movieId: string,
     @Args('castId') castId: string,

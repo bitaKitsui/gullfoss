@@ -15,7 +15,7 @@ export class MovieService {
   async findOneById(id: string) {
     const result = this.prisma.movie.findUnique({
       where: { id },
-      include: { crews: true },
+      include: { crews: true, casts: true },
     });
     if (!result) throw new NotFoundException();
     return result;
@@ -101,6 +101,25 @@ export class MovieService {
         title: title ? title : undefined,
         year: year ? year : undefined,
         country: country ? country : undefined,
+      },
+    });
+  }
+
+  async setCrew(movieId: string, crewId: string) {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id: movieId },
+    });
+
+    const crew = await this.prisma.crew.findUnique({
+      where: { id: crewId },
+    });
+
+    if (!movie || !crew) throw new NotFoundException();
+
+    return await this.prisma.movie.update({
+      where: { id: movieId },
+      data: {
+        crews: { set: [{ id: crewId }] },
       },
     });
   }
