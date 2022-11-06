@@ -1,4 +1,4 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class CreateMovieInput {
@@ -10,4 +10,7 @@ export class CreateMovieInput {
 
   @Field()
   country: string;
+
+  @Field(() => Int)
+  runtime: number;
 }

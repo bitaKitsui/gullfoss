@@ -15,6 +15,7 @@ model Movie {
   title      String
   year       String
   country    String
+  runtime    Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   crews      Crew[]

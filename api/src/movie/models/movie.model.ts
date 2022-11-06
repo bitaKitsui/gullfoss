@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Crew } from '../../crew/models/crew.models';
 import { Cast } from '../../cast/models/cast.models';
 
@@ -15,6 +15,9 @@ export class Movie {
 
   @Field()
   country: string;
+
+  @Field(() => Int)
+  runtime: number;
 
   @Field()
   createdAt: string;

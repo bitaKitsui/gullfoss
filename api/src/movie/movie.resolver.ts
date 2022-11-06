@@ -3,6 +3,7 @@ import { Movie } from './models/movie.model';
 import { MovieService } from './movie.service';
 import { CreateMovieInput } from './models/create-movie-input';
 import { CreateCrewInput } from '../crew/models/create-crew-input';
+import { UpdateMovieInput } from './models/update-movie-input';
 
 @Resolver()
 export class MovieResolver {
@@ -36,18 +37,11 @@ export class MovieResolver {
   }
 
   @Mutation(() => Movie)
-  async createDummy() {
-    return await this.movieService.createDummy();
-  }
-
-  @Mutation(() => Movie)
   async updateMovie(
     @Args('id') id: string,
-    @Args({ name: 'title', nullable: true }) title?: string,
-    @Args({ name: 'year', nullable: true }) year?: string,
-    @Args({ name: 'country', nullable: true }) country?: string,
+    @Args('updateMovieInput') updateMovieInput: UpdateMovieInput,
   ) {
-    return this.movieService.updateMovie(id, title, year, country);
+    return this.movieService.updateMovie(id, updateMovieInput);
   }
 
   @Mutation(() => Movie)

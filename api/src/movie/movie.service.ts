@@ -3,6 +3,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateMovieInput } from './models/create-movie-input';
 import { CreateCrewInput } from '../crew/models/create-crew-input';
+import { UpdateMovieInput } from './models/update-movie-input';
 
 @Injectable()
 export class MovieService {
@@ -22,13 +23,14 @@ export class MovieService {
   }
 
   async create(createMovieInput: CreateMovieInput, crews: CreateCrewInput[]) {
-    const { title, year, country } = createMovieInput;
+    const { title, year, country, runtime } = createMovieInput;
     return this.prisma.movie.create({
       data: {
         id: uuidV4(),
         title,
         year,
         country,
+        runtime,
         crews: {
           create: crews.map(({ name, job }) => ({
             id: uuidV4(),
@@ -43,9 +45,14 @@ export class MovieService {
 
   async createSeeds() {
     const seedsData = [
-      { title: '東京物語', year: '1956', country: '日本' },
-      { title: '駅馬車', year: '1939', country: 'アメリカ' },
-      { title: 'ゲームの規則', year: '1939', country: 'フランス' },
+      { title: '東京物語', year: '1956', country: '日本', runtime: 98 },
+      { title: '駅馬車', year: '1939', country: 'アメリカ', runtime: 100 },
+      {
+        title: 'ゲームの規則',
+        year: '1939',
+        country: 'フランス',
+        runtime: 120,
+      },
     ];
 
     const movies = [];
@@ -56,6 +63,7 @@ export class MovieService {
           title: seed.title,
           year: seed.year,
           country: seed.country,
+          runtime: seed.runtime,
         },
       });
       movies.push(newMovies);
@@ -63,44 +71,15 @@ export class MovieService {
     return await this.prisma.$transaction(movies);
   }
 
-  async createDummy() {
-    const crews = [
-      { name: '濱口竜介', job: '監督' },
-      { name: '佐々木靖之', job: '撮影' },
-    ];
-
-    return await this.prisma.movie.create({
-      data: {
-        id: uuidV4(),
-        title: 'ドライブマイカー',
-        year: '2022',
-        country: '日本',
-        crews: {
-          create: crews.map((crew) => ({
-            id: uuidV4(),
-            name: crew.name,
-            job: crew.job,
-          })),
-        },
-      },
-      include: {
-        crews: true,
-      },
-    });
-  }
-
-  async updateMovie(
-    id: string,
-    title?: string,
-    year?: string,
-    country?: string,
-  ) {
+  async updateMovie(id: string, updateMovieInput: UpdateMovieInput) {
+    const { title, year, country, runtime } = updateMovieInput;
     return await this.prisma.movie.update({
       where: { id },
       data: {
         title: title ? title : undefined,
         year: year ? year : undefined,
         country: country ? country : undefined,
+        runtime: runtime ? runtime : undefined,
       },
     });
   }

@@ -15,6 +15,7 @@ input CreateCrewInput {
 
 input CreateMovieInput {
   country: String!
+  runtime: Int!
   title: String!
   year: String!
 }
@@ -41,6 +42,7 @@ type Movie {
   createdAt: String!
   crews: [Crew!]
   id: String!
+  runtime: Int!
   title: String!
   updatedAt: String!
   year: String!
@@ -51,7 +53,6 @@ type Mutation {
   createCastSeeds: [Cast!]!
   createCrew(createCrewInput: CreateCrewInput!): Crew!
   createCrewSeeds: [Crew!]!
-  createDummy: Movie!
   createLike: Like!
   createSeeds: [Movie!]!
   deleteAll: Boolean!
@@ -64,7 +65,7 @@ type Mutation {
   setCast(castId: String!, movieId: String!): Movie!
   setCrew(crewId: String!, movieId: String!): Movie!
   updateCrewById(id: String!, updateCrewInput: UpdateCrewInput!): Crew!
-  updateMovie(country: String, id: String!, title: String, year: String): Movie!
+  updateMovie(id: String!, updateMovieInput: UpdateMovieInput!): Movie!
 }
 
 type Query {
@@ -79,4 +80,11 @@ type Query {
 input UpdateCrewInput {
   job: String
   name: String
+}
+
+input UpdateMovieInput {
+  country: String
+  runtime: Int
+  title: String
+  year: String
 }
