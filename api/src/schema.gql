@@ -1,0 +1,57 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateCrewInput {
+  job: String!
+  name: String!
+}
+
+input CreateMovieInput {
+  country: String!
+  title: String!
+  year: String!
+}
+
+type Crew {
+  createdAt: String!
+  id: String!
+  job: String!
+  name: String!
+  updatedAt: String!
+}
+
+type Movie {
+  country: String!
+  createdAt: String!
+  crews: [Crew!]
+  id: String!
+  title: String!
+  updatedAt: String!
+  year: String!
+}
+
+type Mutation {
+  create(createMovieInput: CreateMovieInput!, crews: CreateCrewInput!): Movie!
+  createCrew(createCrewInput: CreateCrewInput!): Crew!
+  createCrewSeeds: [Crew!]!
+  createDummy: Movie!
+  createSeeds: [Movie!]!
+  deleteAll: Boolean!
+  deleteAllCrews: Boolean!
+  deleteCrewById(id: String!): Boolean!
+  deleteOneById(id: String!): Boolean!
+  updateCrewById(id: String!, updateCrewInput: UpdateCrewInput!): Crew!
+  updateMovie(country: String, id: String!, title: String, year: String): Movie!
+}
+
+type Query {
+  findAll: [Movie!]!
+  findAllCrew: [Crew!]!
+  findOneById(id: String!): Movie!
+}
+
+input UpdateCrewInput {
+  job: String
+  name: String
+}
