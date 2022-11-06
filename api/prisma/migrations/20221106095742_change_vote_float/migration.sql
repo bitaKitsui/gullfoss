@@ -1,0 +1,23 @@
+/*
+  Warnings:
+
+  - You are about to alter the column `vote` on the `Movie` table. The data in that column could be lost. The data in that column will be cast from `Int` to `Float`.
+
+*/
+-- RedefineTables
+PRAGMA foreign_keys=OFF;
+CREATE TABLE "new_Movie" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "title" TEXT NOT NULL,
+    "year" TEXT NOT NULL,
+    "runtime" INTEGER NOT NULL,
+    "isWatched" BOOLEAN NOT NULL,
+    "vote" REAL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+INSERT INTO "new_Movie" ("createdAt", "id", "isWatched", "runtime", "title", "updatedAt", "vote", "year") SELECT "createdAt", "id", "isWatched", "runtime", "title", "updatedAt", "vote", "year" FROM "Movie";
+DROP TABLE "Movie";
+ALTER TABLE "new_Movie" RENAME TO "Movie";
+PRAGMA foreign_key_check;
+PRAGMA foreign_keys=ON;

@@ -16,6 +16,7 @@ model Movie {
   year       String
   runtime    Int
   isWatched  Boolean
+  vote       Float?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   crews      CrewsOnMovies[]

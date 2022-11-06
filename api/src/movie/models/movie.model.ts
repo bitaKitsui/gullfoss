@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { List } from '../../list/models/list.models';
 import { CrewsOnMovies } from '../../crew/models/crewsOnMovies.models';
 import { CastsOnMovies } from '../../cast/models/castsOnMovies.models';
@@ -21,6 +21,9 @@ export class Movie {
 
   @Field(() => Boolean)
   isWatched: boolean;
+
+  @Field(() => Float, { nullable: true })
+  vote: number | null;
 
   @Field()
   createdAt: string;

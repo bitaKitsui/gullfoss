@@ -103,6 +103,7 @@ type Movie {
   runtime: Int!
   title: String!
   updatedAt: String!
+  vote: Float
   year: String!
 }
 

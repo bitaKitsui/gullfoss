@@ -3,7 +3,6 @@ import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateMovieInput } from './models/create-movie-input';
 import { UpdateMovieInput } from './models/update-movie-input';
-import { count } from 'rxjs';
 
 const INCLUDE = {
   crews: {
@@ -62,13 +61,20 @@ export class MovieService {
 
   async createSeeds() {
     const seedsData = [
-      { title: '東京物語', year: '1956', runtime: 98, isWatched: true },
+      {
+        title: '東京物語',
+        year: '1956',
+        runtime: 98,
+        isWatched: true,
+        vote: 4.5,
+      },
       { title: '駅馬車', year: '1939', runtime: 100, isWatched: false },
       {
         title: 'ゲームの規則',
         year: '1939',
         runtime: 120,
         isWatched: true,
+        vote: 3.3,
       },
       {
         title: 'ドライブマイカー',
@@ -88,6 +94,7 @@ export class MovieService {
           year: seed.year,
           runtime: seed.runtime,
           isWatched: seed.isWatched,
+          vote: seed.vote ? seed.vote : null,
         },
       });
       movies.push(newMovies);
