@@ -19,6 +19,7 @@ model Movie {
   updatedAt  DateTime  @updatedAt
   crews      Crew[]
   casts      Cast[]
+  likes      Like[]
 }
 
 model Crew {
@@ -28,10 +29,19 @@ model Crew {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   movies     Movie[]
+  likes      Like[]
 }
 
 model Cast {
   id      String  @id
   name    String
   movies  Movie[]
+  likes   Like[]
+}
+
+model Like {
+  id      String  @id
+  movies  Movie[]
+  crews   Crew[]
+  casts   Cast[]
 }

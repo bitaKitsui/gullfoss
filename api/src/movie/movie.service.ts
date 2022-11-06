@@ -143,6 +143,25 @@ export class MovieService {
     });
   }
 
+  async likeMovie(movieId: string, likeId: string) {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id: movieId },
+    });
+
+    const like = await this.prisma.like.findUnique({
+      where: { id: likeId },
+    });
+
+    if (!movie || !like) throw new NotFoundException();
+
+    return await this.prisma.movie.update({
+      where: { id: movieId },
+      data: {
+        likes: { set: [{ id: likeId }] },
+      },
+    });
+  }
+
   async deleteOneById(id: string) {
     await this.prisma.movie.delete({ where: { id } });
     return true;

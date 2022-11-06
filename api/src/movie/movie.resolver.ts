@@ -66,6 +66,14 @@ export class MovieResolver {
     return await this.movieService.setCast(movieId, castId);
   }
 
+  @Mutation(() => Movie)
+  async likeMovie(
+    @Args('movieId') movieId: string,
+    @Args('likeId') likeId: string,
+  ) {
+    return await this.movieService.likeMovie(movieId, likeId);
+  }
+
   @Mutation(() => Boolean)
   async deleteAll() {
     return this.movieService.deleteAll();

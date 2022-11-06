@@ -28,6 +28,13 @@ type Crew {
   updatedAt: String!
 }
 
+type Like {
+  casts: [Cast!]
+  crews: [Crew!]
+  id: String!
+  movies: [Movie!]
+}
+
 type Movie {
   casts: [Cast!]
   country: String!
@@ -45,11 +52,15 @@ type Mutation {
   createCrew(createCrewInput: CreateCrewInput!): Crew!
   createCrewSeeds: [Crew!]!
   createDummy: Movie!
+  createLike: Like!
   createSeeds: [Movie!]!
   deleteAll: Boolean!
   deleteAllCrews: Boolean!
   deleteCrewById(id: String!): Boolean!
   deleteOneById(id: String!): Boolean!
+  likeCast(castId: String!, likeId: String!): Cast!
+  likeCrew(crewId: String!, likeId: String!): Crew!
+  likeMovie(likeId: String!, movieId: String!): Movie!
   setCast(castId: String!, movieId: String!): Movie!
   setCrew(crewId: String!, movieId: String!): Movie!
   updateCrewById(id: String!, updateCrewInput: UpdateCrewInput!): Crew!
@@ -60,6 +71,8 @@ type Query {
   findAll: [Movie!]!
   findAllCasts: [Cast!]!
   findAllCrew: [Crew!]!
+  findAllLikes: [Like!]!
+  findLikeById(id: String!): Like!
   findOneById(id: String!): Movie!
 }
 

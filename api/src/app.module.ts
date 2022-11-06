@@ -5,6 +5,7 @@ import { join } from 'path';
 import { MovieModule } from './movie/movie.module';
 import { CrewModule } from './crew/crew.module';
 import { CastModule } from './cast/cast.module';
+import { LikeModule } from './like/like.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CastModule } from './cast/cast.module';
     MovieModule,
     CrewModule,
     CastModule,
+    LikeModule,
   ],
   controllers: [],
   providers: [],

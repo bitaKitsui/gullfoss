@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateCrewInput } from './models/create-crew-input';
@@ -71,6 +75,20 @@ export class CrewService {
     } else {
       throw new BadRequestException();
     }
+  }
+
+  async likeCrew(crewId: string, likeId: string) {
+    const crew = await this.prisma.crew.findUnique({ where: { id: crewId } });
+    const like = await this.prisma.like.findUnique({ where: { id: likeId } });
+
+    if (!crew || !like) throw new NotFoundException();
+
+    return await this.prisma.crew.update({
+      where: { id: crewId },
+      data: {
+        likes: { set: [{ id: likeId }] },
+      },
+    });
   }
 
   async deleteCrewById(id: string) {

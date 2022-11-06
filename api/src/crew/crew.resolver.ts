@@ -34,6 +34,14 @@ export class CrewResolver {
     return this.crewService.updateCrewById(id, updateCrewInput);
   }
 
+  @Mutation(() => Crew)
+  async likeCrew(
+    @Args('crewId') crewId: string,
+    @Args('likeId') likeId: string,
+  ) {
+    return this.crewService.likeCrew(crewId, likeId);
+  }
+
   @Mutation(() => Boolean)
   async deleteCrewById(@Args('id') id: string) {
     return this.crewService.deleteCrewById(id);
