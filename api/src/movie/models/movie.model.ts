@@ -22,8 +22,8 @@ export class Movie {
   @Field()
   updatedAt: string;
 
-  @Field((type) => [Crew], { nullable: true })
-  crews: [Crew];
+  @Field(() => [Crew], { nullable: true })
+  crews: [Crew] | null;
 
   @Field(() => [Cast], { nullable: true })
   casts: Cast[] | null;

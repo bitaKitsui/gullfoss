@@ -27,8 +27,7 @@ model Crew {
   job        String
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  movie      Movie?    @relation(fields: [movieId], references: [id])
-  movieId    String?
+  movies     Movie[]
 }
 
 model Cast {
