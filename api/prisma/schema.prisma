@@ -18,6 +18,7 @@ model Movie {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   crews      Crew[]
+  casts      Cast[]
 }
 
 model Crew {
@@ -28,4 +29,10 @@ model Crew {
   updatedAt  DateTime  @updatedAt
   movie      Movie?    @relation(fields: [movieId], references: [id])
   movieId    String?
+}
+
+model Cast {
+  id      String  @id
+  name    String
+  movies  Movie[]
 }

@@ -50,6 +50,14 @@ export class MovieResolver {
     return this.movieService.updateMovie(id, title, year, country);
   }
 
+  @Mutation(() => Movie)
+  async setCast(
+    @Args('movieId') movieId: string,
+    @Args('castId') castId: string,
+  ) {
+    return await this.movieService.setCast(movieId, castId);
+  }
+
   @Mutation(() => Boolean)
   async deleteAll() {
     return this.movieService.deleteAll();

@@ -1,5 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Crew } from '../../crew/models/crew.models';
+import { Cast } from '../../cast/models/cast.models';
 
 @ObjectType()
 export class Movie {
@@ -23,4 +24,7 @@ export class Movie {
 
   @Field((type) => [Crew], { nullable: true })
   crews: [Crew];
+
+  @Field(() => [Cast], { nullable: true })
+  casts: Cast[] | null;
 }
