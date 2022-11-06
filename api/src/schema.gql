@@ -129,6 +129,7 @@ type Mutation {
   setJob(crewId: String!, jobId: String!): JobsOnCrews!
   updateCrewById(id: String!, updateCrewInput: UpdateCrewInput!): Crew!
   updateMovie(id: String!, updateMovieInput: UpdateMovieInput!): Movie!
+  voteMovie(id: String!, vote: Float!): Movie!
 }
 
 type Query {

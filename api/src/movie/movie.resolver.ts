@@ -47,6 +47,11 @@ export class MovieResolver {
   }
 
   @Mutation(() => Movie)
+  async voteMovie(@Args('id') id: string, @Args('vote') vote: number) {
+    return await this.movieService.voteMovie(id, vote);
+  }
+
+  @Mutation(() => Movie)
   async updateMovie(
     @Args('id') id: string,
     @Args('updateMovieInput') updateMovieInput: UpdateMovieInput,

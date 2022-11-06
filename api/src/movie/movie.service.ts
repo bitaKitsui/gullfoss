@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateMovieInput } from './models/create-movie-input';
@@ -100,6 +104,22 @@ export class MovieService {
       movies.push(newMovies);
     }
     return await this.prisma.$transaction(movies);
+  }
+
+  async voteMovie(id: string, vote: number) {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id },
+    });
+
+    if (!movie) throw new NotFoundException();
+    if (movie.isWatched === false) throw new BadRequestException();
+
+    return await this.prisma.movie.update({
+      where: { id },
+      data: {
+        vote,
+      },
+    });
   }
 
   async updateMovie(id: string, updateMovieInput: UpdateMovieInput) {
