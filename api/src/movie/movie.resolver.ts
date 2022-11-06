@@ -24,9 +24,10 @@ export class MovieResolver {
   @Mutation(() => Movie)
   async create(
     @Args('createMovieInput') createMovieInput: CreateMovieInput,
-    @Args('crews') crews: CreateCrewInput,
+    @Args({ name: 'crews', type: () => [CreateCrewInput] })
+    crews: CreateCrewInput[],
   ) {
-    return this.movieService.create(createMovieInput, crews);
+    return await this.movieService.create(createMovieInput, crews);
   }
 
   @Mutation(() => [Movie])

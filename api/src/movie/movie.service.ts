@@ -21,7 +21,7 @@ export class MovieService {
     return result;
   }
 
-  async create(createMovieInput: CreateMovieInput, crews: CreateCrewInput) {
+  async create(createMovieInput: CreateMovieInput, crews: CreateCrewInput[]) {
     const { title, year, country } = createMovieInput;
     return this.prisma.movie.create({
       data: {
@@ -30,9 +30,14 @@ export class MovieService {
         year,
         country,
         crews: {
-          create: { id: uuidV4(), name: crews.name, job: crews.job },
+          create: crews.map(({ name, job }) => ({
+            id: uuidV4(),
+            name,
+            job,
+          })),
         },
       },
+      include: { crews: true },
     });
   }
 

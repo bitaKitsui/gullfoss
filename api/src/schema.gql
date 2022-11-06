@@ -32,7 +32,7 @@ type Movie {
 }
 
 type Mutation {
-  create(createMovieInput: CreateMovieInput!, crews: CreateCrewInput!): Movie!
+  create(createMovieInput: CreateMovieInput!, crews: [CreateCrewInput!]!): Movie!
   createCrew(createCrewInput: CreateCrewInput!): Crew!
   createCrewSeeds: [Crew!]!
   createDummy: Movie!
