@@ -14,6 +14,11 @@ export class CrewResolver {
     return this.crewService.findAllCrew();
   }
 
+  @Query(() => [Crew])
+  async findCrewsNoJob() {
+    return this.crewService.findCrewsNoJob();
+  }
+
   @Mutation(() => Crew)
   async createCrew(
     @Args('createCrewInput', { type: () => CreateCrewInput })

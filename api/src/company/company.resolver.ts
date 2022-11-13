@@ -1,4 +1,4 @@
-import { Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { CompanyService } from './company.service';
 import { Company } from './models/company.models';
 
@@ -9,6 +9,11 @@ export class CompanyResolver {
   @Query(() => [Company])
   async findAllCompanies() {
     return await this.companyService.findAllCompanies();
+  }
+
+  @Mutation(() => Company)
+  async createCompany(@Args('name') name: string) {
+    return await this.companyService.createCompany(name);
   }
 
   @Mutation(() => [Company])

@@ -3,6 +3,12 @@ import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateCrewInput } from './models/create-crew-input';
 import { UpdateCrewInput } from './models/update-crew-input';
+import { DIRECTORS } from './const/const';
+
+const INCLUDE = {
+  movies: { include: { movie: true } },
+  jobs: { include: { job: true } },
+};
 
 @Injectable()
 export class CrewService {
@@ -10,10 +16,18 @@ export class CrewService {
 
   async findAllCrew() {
     return await this.prisma.crew.findMany({
-      include: {
-        movies: { include: { movie: true } },
-        jobs: { include: { job: true } },
+      include: INCLUDE,
+    });
+  }
+
+  async findCrewsNoJob() {
+    return await this.prisma.crew.findMany({
+      where: {
+        jobs: {
+          none: {},
+        },
       },
+      include: INCLUDE,
     });
   }
 
@@ -29,18 +43,12 @@ export class CrewService {
   }
 
   async createCrewSeeds() {
-    const seedsData = [
-      { name: '小津安二郎' },
-      { name: 'ジョン・フォード' },
-      { name: 'ジャン・ルノワール' },
-    ];
-
     const crews = [];
-    for (const seed of seedsData) {
+    for (const seed of DIRECTORS) {
       const newCrews = this.prisma.crew.create({
         data: {
           id: uuidV4(),
-          name: seed.name,
+          name: seed,
         },
       });
       crews.push(newCrews);

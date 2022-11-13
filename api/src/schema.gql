@@ -47,6 +47,7 @@ input CreateCrewInput {
 input CreateMovieInput {
   runtime: Int!
   title: String!
+  vote: Float
   year: String!
 }
 
@@ -110,7 +111,9 @@ type Movie {
 type Mutation {
   addList(listId: String!, movieId: String!): ListsOnMovies!
   create(createMovieInput: CreateMovieInput!): Movie!
+  createCast(name: String!): Cast!
   createCastSeeds: [Cast!]!
+  createCompany(name: String!): Company!
   createCompanySeeds: [Company!]!
   createCountrySeeds: [Country!]!
   createCrew(createCrewInput: CreateCrewInput!): Crew!
@@ -123,6 +126,7 @@ type Mutation {
   deleteCrewById(id: String!): Boolean!
   deleteOneById(id: String!): Boolean!
   setCast(castId: String!, movieId: String!): CastsOnMovies!
+  setCasts(castIds: [String!]!, movieId: String!): CastsOnMovies!
   setCompany(companyId: String!, movieId: String!): CompaniesOnMovies!
   setCountry(countryId: String!, movieId: String!): CountriesOnMovies!
   setCrew(crewId: String!, movieId: String!): CrewsOnMovies!
@@ -134,12 +138,14 @@ type Mutation {
 
 type Query {
   findAll: [Movie!]!
-  findAllCasts: [CastsOnMovies!]!
+  findAllCasts: [Cast!]!
   findAllCompanies: [Company!]!
   findAllCountries: [Country!]!
   findAllCrew: [Crew!]!
   findAllJobs: [Job!]!
   findAllLists: [ListsOnMovies!]!
+  findCastsNoMovies: [Cast!]!
+  findCrewsNoJob: [Crew!]!
   findListById(id: String!): List!
   findOneById(id: String!): Movie!
   findUnWatchedMovies: [Movie!]!

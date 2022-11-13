@@ -75,6 +75,14 @@ export class MovieResolver {
     return await this.movieService.setCast(movieId, castId);
   }
 
+  @Mutation(() => CastsOnMovies)
+  async setCasts(
+    @Args('movieId') movieId: string,
+    @Args('castIds', { type: () => [String] }) castIds: string[],
+  ) {
+    return await this.movieService.setCasts(movieId, castIds);
+  }
+
   @Mutation(() => ListsOnMovies)
   async addList(
     @Args('movieId') movieId: string,

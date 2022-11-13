@@ -7,6 +7,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { PrismaService } from '../prisma.service';
 import { CreateMovieInput } from './models/create-movie-input';
 import { UpdateMovieInput } from './models/update-movie-input';
+import { Cast } from '../cast/models/cast.models';
 
 const INCLUDE = {
   crews: {
@@ -51,13 +52,14 @@ export class MovieService {
   }
 
   async create(createMovieInput: CreateMovieInput) {
-    const { title, year, runtime } = createMovieInput;
+    const { title, year, runtime, vote } = createMovieInput;
     return this.prisma.movie.create({
       data: {
         id: uuidV4(),
         title,
         year,
         runtime,
+        vote: vote ? vote : null,
         isWatched: true,
       },
     });
@@ -172,6 +174,38 @@ export class MovieService {
       },
       include: { movie: true, cast: true },
     });
+  }
+
+  async setCasts(movieId: string, castIds: string[]) {
+    const movie = await this.prisma.movie.findUnique({
+      where: { id: movieId },
+    });
+
+    const casts: Cast[] = await this.prisma.cast.findMany({
+      where: {
+        id: {
+          in: castIds,
+        },
+      },
+    });
+
+    if (!casts.length || !movie) {
+      throw new NotFoundException();
+    }
+
+    const castsOnMovies = [];
+    for (const cast of casts) {
+      const newCastsOnMovies = this.prisma.castsOnMovies.create({
+        data: {
+          castId: cast.id,
+          movieId: movie.id,
+        },
+        include: { cast: true, movie: true },
+      });
+      castsOnMovies.push(newCastsOnMovies);
+    }
+
+    return await this.prisma.$transaction(castsOnMovies);
   }
 
   async addList(movieId: string, listId: string) {

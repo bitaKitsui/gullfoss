@@ -10,6 +10,15 @@ export class CompanyService {
     return await this.prisma.company.findMany();
   }
 
+  async createCompany(name: string) {
+    return await this.prisma.company.create({
+      data: {
+        id: uuidV4(),
+        name,
+      },
+    });
+  }
+
   async createCompanySeeds() {
     const seedsData = [{ name: '東映' }, { name: 'Fox' }, { name: 'ゴーモン' }];
 
